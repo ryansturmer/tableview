@@ -217,10 +217,6 @@ class TableView(object):
     def __repr__(self):
         return "<Table:%d rows, %d columns>" % (len(self.row_index), len(self.col_index))
 
-def load_table(filename):
+def load(filename):
     with CSVFile(filename) as fp:
         return TableView(fp.readlines())
-
-if __name__ == '__main__':
-    table = load_table('example.csv')    
-    table.pretty()
