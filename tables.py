@@ -117,6 +117,32 @@ class TextFile(SimpleDelimitedFile):
     def __init__(self, *args, **kwargs):
         SimpleDelimitedFile.__init__(self, ' ', *args, **kwargs)
 
+class TableSelector(object):
+    def __init__(self, source, mode):
+        self.source = source
+        self.mode = mode
+
+    def __getitem__(self, item):
+        if isinstance(item, slice):
+            if self.mode == VectorView.ROW:
+                start, stop, step = item.indices(len(self.source.row_index))
+                return TableView(self.source.data, ([self.source.row_index[x] for x in range(start, stop, step)], self.source.col_index))
+            else: # VectorView.COL    
+                start, stop, step = item.indices(len(self.source.col_index))
+                return TableView(self.source.data, (self.source.row_index, [self.source.col_index[x] for x in range(start, stop, step)]))
+        else: # index, not slice
+            if self.mode == VectorView.ROW:
+                return VectorView(self.source.data, (self.source.row_index[item], self.source.col_index), type=VectorView.ROW)
+            else:
+                return VectorView(self.source.data, (self.source.col_index[item], self.source.row_index), type=VectorView.COL)
+
+    def __len__(self):
+        return len(self.source.row_index) if self.mode == VectorView.ROW else len(self.source.col_index)
+
+    def __iter__(self):
+        return iter([self[i] for i in range(len(self))])
+
+            
 class VectorView(object):
     ROW = 0
     COL = 1
@@ -162,16 +188,16 @@ class TableView(object):
 
     @property
     def rows(self):
-        list(self)
-    
+        return TableSelector(self, mode=VectorView.ROW)
+
     @property
     def cols(self):
-        return [VectorView(self.data, (c, self.row_index), type=VectorView.COL) for c in self.col_index]
+        return TableSelector(self, mode=VectorView.COL)
 
     def __iter__(self):
         return iter([self[r] for r in range(len(self))])
     def __getitem__(self, item):
-        return VectorView(self.data, (self.row_index[item], self.col_index), type=VectorView.ROW)
+        return self.rows[item]
 
     def strip_rows(self, selector):
         return self.select_rows(lambda x : not selector(x))
@@ -181,17 +207,14 @@ class TableView(object):
 
     def select_rows(self, selector):
         new_row_index = []
-        for r in self.row_index:
-            row = VectorView(self.data, (r, self.col_index), type=VectorView.ROW)
+        for row in self.rows:
             if selector(row):
                 new_row_index.append(r)
-        
         return TableView(self.data, (new_row_index, self.col_index))
 
     def select_cols(self, selector):
         new_col_index = []
-        for c in self.col_index:
-            col = VectorView(self.data, (c, self.row_index), type=VectorView.COL)
+        for col in self.cols:
             if selector(col):
                 new_col_index.append(c)
         return TableView(self.data, (self.row_index, new_col_index))
@@ -203,7 +226,7 @@ class TableView(object):
         col_widths = [0]*len(self[0])
         for row in self:
             for i, cell in enumerate(row):
-                col_widths[i] = max(len(cell), col_widths[i])
+                col_widths[i] = max(len(str(cell)), col_widths[i])
         lines = []
         for row in self:
             line = []
