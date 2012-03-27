@@ -2,10 +2,10 @@ import re, types
 
 def listify(l):
     if isinstance(l, str) or isinstance(l, unicode):
-        data = [l]
+        return [l]
     try: iter(l)
     except: l = [l]
-    return l
+    return list(l)
 
 class DelimitedFile(file):
     def __init__(self, *args, **kwargs):
