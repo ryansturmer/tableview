@@ -1,4 +1,4 @@
-import re, types
+import re, types, os
 
 def listify(l):
     if isinstance(l, str) or isinstance(l, unicode):
@@ -207,16 +207,16 @@ class TableView(object):
 
     def select_rows(self, selector):
         new_row_index = []
-        for row in self.rows:
+        for i, row in enumerate(self.rows):
             if selector(row):
-                new_row_index.append(r)
+                new_row_index.append(self.row_index[i])
         return TableView(self.data, (new_row_index, self.col_index))
 
     def select_cols(self, selector):
         new_col_index = []
-        for col in self.cols:
+        for i, col in enumerate(self.cols):
             if selector(col):
-                new_col_index.append(c)
+                new_col_index.append(self.col_index[i])
         return TableView(self.data, (self.row_index, new_col_index))
 
     def pretty(self):
@@ -241,5 +241,11 @@ class TableView(object):
         return "<Table:%d rows, %d columns>" % (len(self.row_index), len(self.col_index))
 
 def load(filename):
-    with CSVFile(filename) as fp:
-        return TableView(fp.readlines())
+    path, ext = os.path.splitext(filename)
+    ext = ext.lower()
+    if ext in ('tsv', 'tab', 'txt'):
+        with TSVFile(filename) as fp:
+            return TableView(fp.readlines())
+    else:
+        with CSVFile(filename) as fp:
+            return TableView(fp.readlines())
