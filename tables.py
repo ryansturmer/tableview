@@ -151,6 +151,9 @@ class VectorView(object):
         self.ordinal, self.index = index
         self.type = type
 
+    def pretty(self):
+        return (' ' if self.type == VectorView.ROW else '\n').join(map(str, self))
+
     def __len__(self):
         return len(self.index)
 
@@ -158,10 +161,15 @@ class VectorView(object):
         return iter([self[i] for i in range(len(self))])
 
     def __getitem__(self, item):
-        if self.type == VectorView.ROW:
-            return self.data[self.ordinal][self.index[item]]
+        if isinstance(item, slice):
+            start, stop, step = item.indices(len(self.index))
+            new_index = [self.index[i] for i in range(start, stop, step)]
+            return VectorView(self.data, (self.ordinal, new_index), self.type)
         else:
-            return self.data[self.index[item]][self.ordinal]
+            if self.type == VectorView.ROW:
+                return self.data[self.ordinal][self.index[item]]
+            else:
+                return self.data[self.index[item]][self.ordinal]
 
     def __setitem__(self, a, b):
         if self.type == VectorView.ROW:
@@ -245,7 +253,16 @@ def load(filename):
     ext = ext.lower()
     if ext in ('tsv', 'tab', 'txt'):
         with TSVFile(filename) as fp:
-            return TableView(fp.readlines())
+            source_data = fp.readlines()
     else:
         with CSVFile(filename) as fp:
-            return TableView(fp.readlines())
+            source_data = fp.readlines()
+
+    maxlen = 0
+    for row in source_data:
+        maxlen = max(len(row), maxlen)
+
+    for row in source_data:
+        row.extend([None]*(maxlen-len(row)))
+
+    return TableView(source_data)
