@@ -1,12 +1,12 @@
-tables.py
+tableview
 
 A simple python module for loading, manipulating and saving data from text files.
 
 ```python
 
-import tables
+import tableview
 
-table = tables.load('example.csv')
+table = tableview.load('example.csv')
 
 print table.pretty()
 
