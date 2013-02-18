@@ -1,6 +1,9 @@
 import re, types, os
 
 def listify(l):
+    '''
+    Turn any non-string, non-unicode iterable into a list.
+    '''
     if isinstance(l, str) or isinstance(l, unicode):
         return [l]
     try: iter(l)
@@ -48,6 +51,9 @@ class VectorView(object):
         self.type = type
 
     def pretty(self):
+        '''
+        Return a pretty printed string of this vector
+        '''
         return (' ' if self.type == VectorView.ROW else '\n').join(map(str, self))
 
     def __len__(self):
@@ -79,6 +85,9 @@ class VectorView(object):
         return "<%s:%d items>" % ('Row' if self.type == VectorView.ROW else 'Column', len(self))
 
 class TableView(object):
+    '''
+    Represents a view of a tabular data source.
+    '''
     def __init__(self, src, index=None):
         self.data = src
         if not index:
@@ -104,9 +113,21 @@ class TableView(object):
         return self.rows[item]
 
     def strip_rows(self, selector):
+        '''
+        Return a new TableView without the rows that match the provided selector.
+        Parameters:
+          selector - A function that takes a single argument, a table row, and returns 
+                     True for a row that is to be stripped, and False otherwise.
+        '''
         return self.select_rows(lambda x : not selector(x))
     
     def strip_cols(self, selector):
+        '''
+        Return a new TableView without the rows that match the provided selector.
+        Parameters:
+          selector - A function that takes a single argument, a table column, and returns 
+                     True for a column that is to be stripped, and False otherwise.
+        '''
         return self.select_cols(lambda x : not selector(x))
 
     def select_rows(self, selector):
@@ -124,6 +145,9 @@ class TableView(object):
         return TableView(self.data, (self.row_index, new_col_index))
 
     def pretty(self):
+        '''
+        Return a pretty printed string of this table.
+        '''
         if len(self) == 0:
             return "<Empty Table>"
         retval = ''
@@ -146,6 +170,13 @@ class TableView(object):
 
 from files import TSVFile, CSVFile
 def load(filename):
+    '''
+    Load a table from a text file on disk and return a TableView that represents it.
+    Function uses the file extension to determine the filetype:
+    .tsv .tab .txt = Tab-Delimited Text
+         Otherwise = Comma-Delimited Text
+    None will be substituted for all missing values.
+    '''
     path, ext = os.path.splitext(filename)
     ext = ext.lower()
     if ext in ('tsv', 'tab', 'txt'):
