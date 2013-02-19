@@ -69,9 +69,18 @@ class VectorView(object):
             return VectorView(self.data, (self.ordinal, new_index), self.type)
         else:
             if self.type == VectorView.ROW:
-                return self.data[self.ordinal][self.index[item]]
+                j = self.index[item]
+                try:
+                    return self.data[self.ordinal][j]
+                except:
+                    return None
+
             else:
-                return self.data[self.index[item]][self.ordinal]
+                i = self.index[item]
+                try:
+                    return self.data[i][self.ordinal]
+                except:
+                    return None
 
     def __setitem__(self, a, b):
         if self.type == VectorView.ROW:
@@ -92,7 +101,7 @@ class TableView(object):
         self.data = src
         if not index:
             self.row_index = range(len(src))
-            self.col_index = range(len(src[0]))
+            self.col_index = range(max(map(len, src)))
         else:
             self.row_index, self.col_index = index
     
@@ -159,7 +168,7 @@ class TableView(object):
         for row in self:
             line = []
             for i,cell in enumerate(row):
-                line.append(str(cell) + ' '*(col_widths[i]-len(str(cell))))
+                line.append(str(cell) if cell else ''  + ' '*(col_widths[i]-len(str(cell))))
             lines.append(line)
         return '\n'.join([' '.join(line) for line in lines])
 
