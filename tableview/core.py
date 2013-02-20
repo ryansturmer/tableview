@@ -168,7 +168,8 @@ class TableView(object):
         for row in self:
             line = []
             for i,cell in enumerate(row):
-                line.append(str(cell) if cell else ''  + ' '*(col_widths[i]-len(str(cell))))
+                s = str(cell) if cell else ''
+                line.append(s + ' '*(col_widths[i]-len(s)))
             lines.append(line)
         return '\n'.join([' '.join(line) for line in lines])
 
