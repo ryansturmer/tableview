@@ -22,3 +22,34 @@ Tableview is a python library for loading, manipulating and presenting tabular d
                     ['Natasha Yar', 'Denise Crosby', 'Lieutenant', 'Security Chief']]
 
   >> print table.pretty()
+
+  Character       Actor           Rank                 Position          
+  Jean-Luc Picard Patrick Stewart Captain              Commanding Officer
+  William Riker   Jonathan Frakes Commander            First Officer     
+  Geordi LaForge  Levar Burton    Lieutenant           Chief Engineer    
+  Data            Brent Spiner    Lieutenant Commander Science Officer   
+  Worf            Michael Dorn    Lieutenant           Tactical Officer  
+  Natasha Yar     Denise Crosby   Lieutenant           Security Chief    
+
+  >> lieutenants = table.select_rows(lambda row : row[2] == 'Lieutenant')
+  
+  >> print lieutenants.pretty()
+
+  Geordi LaForge Levar Burton  Lieutenant Chief Engineer  
+  Worf           Michael Dorn  Lieutenant Tactical Officer
+  Natasha Yar    Denise Crosby Lieutenant Security Chief  
+
+  >> for row in lieutenants:
+        row[2] = 'Lieutenant Commander'
+
+  >> print table.pretty()
+
+  Character       Actor           Rank                 Position          
+  Jean-Luc Picard Patrick Stewart Captain              Commanding Officer
+  William Riker   Jonathan Frakes Commander            First Officer     
+  Geordi LaForge  Levar Burton    Lieutenant Commander Chief Engineer    
+  Data            Brent Spiner    Lieutenant Commander Science Officer   
+  Worf            Michael Dorn    Lieutenant Commander Tactical Officer  
+  Natasha Yar     Denise Crosby   Lieutenant Commander Security Chief    
+
+
