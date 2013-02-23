@@ -32,6 +32,12 @@ class TableSelector(object):
             else:
                 return VectorView(self.source.data, (self.source.col_index[item], self.source.row_index), type=VectorView.COL)
 
+    def __delitem__(self, item):
+        if self.mode == VectorView.ROW:
+            del self.source.row_index[item]
+        else:
+            del self.source.col_index[item]
+                
     def __len__(self):
         return len(self.source.row_index) if self.mode == VectorView.ROW else len(self.source.col_index)
 
@@ -120,6 +126,8 @@ class TableView(object):
         return iter([self[r] for r in range(len(self))])
     def __getitem__(self, item):
         return self.rows[item]
+    def __delitem__(self, i):
+        del self.row_index[i]
 
     def strip_rows(self, selector):
         '''
