@@ -110,9 +110,24 @@ class TableView(object):
             self.col_index = range(max(map(len, src)))
         else:
             self.row_index, self.col_index = index
-    
+   
     def __len__(self):
         return len(self.row_index)
+
+    def _dataset(self):
+        import tablib
+        d = tablib.Dataset()
+        for row in self:
+            d.append(row)
+        return d
+
+    @property
+    def csv(self):
+        return self._dataset().csv
+
+    @property
+    def json(self):
+        return self._dataset().json
 
     @property
     def rows(self):
