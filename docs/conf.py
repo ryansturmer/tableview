@@ -95,14 +95,14 @@ pygments_style = 'sphinx'
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
+html_sidebars = {
+                 'index': ['sidebarintro.html', 'sourcelink.html', 'searchbox.html'],
+                 '**': ['sidebarlogo.html', 'localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html']}
 if on_rtd:
     html_theme = 'default'
 else:
     html_theme_path = ['_themes']
     html_theme = 'flask'
-    html_sidebars = {
-                 'index': ['sidebarintro.html', 'sourcelink.html', 'searchbox.html'],
-                 '**': ['sidebarlogo.html', 'localtoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html']}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
