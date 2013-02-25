@@ -104,7 +104,7 @@ The select methods take a single callable that takes a single argument (a row or
 
 Like all operations, the same can be done with columns.  Using a fresh ``table``::
 
-  >>> print table.select_cols(lambda col : col[0] in ('Name', 'Drink'))
+  >>> print table.select_cols(lambda col : col[0] in ('Name', 'Drink')).pretty()
   Name    Drink     
   Ryan    Tea       
   Michael Coffee    
@@ -118,7 +118,7 @@ Stripping Rows and Columns
 --------------------------
 Stripping works just like selecting, except that the matching rows/columns are removed from the output, rather than included.  Back to our coffee drinkers::
 
-  >>> print table.strip_rows(lambda row : row[2] == 'Coffee')
+  >>> print table.strip_rows(lambda row : row[2] == 'Coffee').pretty()
   Name    Age Drink     Color 
   Ryan    30  Tea       Purple
   Keith   40  Tea       Maroon
