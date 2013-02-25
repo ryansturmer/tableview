@@ -13,7 +13,7 @@ The heart of the Tableview library is the ``TableView`` object.  It represents a
            ['Michael', 31, 'Coffee', 'Blue'], \
            ['Keith', 40, 'Tea', 'Maroon'], \
            ['Brent', 26, 'Coffee', 'Blue'], \
-           ['Craig', 35, 'Coffee', 'Red']]
+           ['Craig', '??', 'Bourbon', 'Turquoise']]
 
   table = tableview.TableView(d)
 
@@ -31,7 +31,7 @@ The ``pretty()`` method returns a pretty string for a ``TableView``::
   Michael 31  Coffee    Blue  
   Keith   40  Tea       Maroon
   Brent   26  Coffee    Blue  
-  Craig   35  Coffee    Red
+  Craig   ??  Bourbon    Turquoise
 
 Rows and Columns
 ----------------
@@ -75,7 +75,7 @@ Looking at the data now, we see there are no column headers, and the Age column 
   Michael Coffee    Blue  
   Keith   Tea       Maroon
   Brent   Coffee    Blue  
-  Craig   Coffee    Red
+  Craig   Bourbon   Turquoise
 
 It is important to remember that we haven't modified the source data.  Row and column operations only affect the view itself.  We can create a new view from the data, and take a look at it::
   
@@ -86,7 +86,7 @@ It is important to remember that we haven't modified the source data.  Row and c
   Michael 31  Coffee    Blue  
   Keith   40  Tea       Maroon
   Brent   26  Coffee    Blue  
-  Craig   35  Coffee    Red
+  Craig   ??  Bourbon   Turquoise
 
 Selecting Rows and Columns
 --------------------------
@@ -100,7 +100,6 @@ The select methods take a single callable that takes a single argument (a row or
   Name    Age Drink     Color 
   Michael 31  Coffee    Blue  
   Brent   26  Coffee    Blue  
-  Craig   35  Coffee    Red
 
 Like all operations, the same can be done with columns.  Using a fresh ``table``::
 
@@ -110,7 +109,7 @@ Like all operations, the same can be done with columns.  Using a fresh ``table``
   Michael Coffee    
   Keith   Tea       
   Brent   Coffee    
-  Craig   Coffee    
+  Craig   Bourbon    
 
 Selection operations return *new* tableview objects.  Our original ``TableView`` is untouched by calls to ``select_rows`` and ``select_cols``
 
@@ -141,7 +140,7 @@ We've singled out all the coffee drinkers, and changed their favorite color to y
   Michael 31  Coffee    Yellow  
   Keith   40  Tea       Maroon
   Brent   26  Coffee    Yellow  
-  Craig   35  Coffee    Yellow
+  Craig   ??  Bourbon   Turquoise
 
 Loading Data from Disk
 ----------------------
@@ -152,6 +151,6 @@ If you are working with CSV or text files, data can be easily loaded from disk::
 In this case, the ``TableView`` object wasn't invoked directly.  Like any ``TableView``, we can access its source data using the ``data`` property::
 
   >>> print table.data
-  [['Name', 'Age', 'Drink', 'Color'], ['Ryan', 30, 'Tea', 'Purple'], ['Michael', 31, 'Coffee', 'Blue'], ['Keith', 40, 'Tea', 'Maroon'], ['Brent', 26, 'Coffee', 'Blue'], ['Craig', 35, 'Coffee', 'Red']]
+  [['Name', 'Age', 'Drink', 'Color'], ['Ryan', 30, 'Tea', 'Purple'], ['Michael', 31, 'Coffee', 'Blue'], ['Keith', 40, 'Tea', 'Maroon'], ['Brent', 26, 'Coffee', 'Blue'], ['Craig', ??, 'Bourbon', 'Turquoise']]
 
 The ``tableview.load`` function uses the file extension to determine how to parse the file.  A .csv extension indicates comma-separated-values, and any other extension is assumed to be tab-separated text.
