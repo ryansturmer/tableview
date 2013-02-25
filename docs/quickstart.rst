@@ -118,7 +118,7 @@ Stripping Rows and Columns
 --------------------------
 Stripping works just like selecting, except that the matching rows/columns are removed from the output, rather than included.  Back to our coffee drinkers::
 
-  >>> print table.select_rows(lambda row : row[2] == 'Coffee')
+  >>> print table.strip_rows(lambda row : row[2] == 'Coffee')
   Name    Age Drink     Color 
   Ryan    30  Tea       Purple
   Keith   40  Tea       Maroon
