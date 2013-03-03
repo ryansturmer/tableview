@@ -3,7 +3,7 @@ d = [['Name', 'Age', 'Drink', 'Color'],
      ['Michael', 31, 'Coffee', 'Blue'],
      ['Keith', 40, 'Diet Coke', 'Maroon'],
      ['Brent', 26, 'Coffee', 'Blue'],
-     ['Craig', 35, 'Coffee', 'Red']]
+     ['Craig', '??', 'Turquoise', 'Red']]
 
 import tableview
 
@@ -26,3 +26,6 @@ del t2.cols[1]
 
 print "\nMichael Removed:"
 print t2.pretty()
+
+print "\nRaw:"
+print t.raw

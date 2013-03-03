@@ -1,5 +1,12 @@
 import re, types, os
 
+__title__ = 'tableview'
+__version__ = '0.0.5'
+__author__ = 'Ryan Sturmer'
+__license__ = 'MIT'
+__copyright__ = 'Copyright 2012 Ryan Sturmer'
+__docformat__ = 'restructuredtext'
+
 def listify(l):
     '''
     Turn any non-string, non-unicode iterable into a list.

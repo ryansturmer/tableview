@@ -142,6 +142,13 @@ We've singled out all the coffee drinkers, and changed their favorite color to y
   Brent   26  Coffee    Yellow  
   Craig   ??  Bourbon   Turquoise
 
+Raw Data
+--------
+A copy of the contents of a view can be retrieved using its ``raw`` property.  This returns *a copy* of the view's data as a list of lists::
+  
+  >>> table.raw
+  [['Ryan', 30, 'Tea', 'Purple'], ['Michael', 31, 'Coffee', 'Blue'], ['Keith', 40, 'Diet Coke', 'Maroon'], ['Brent', 26, 'Coffee', 'Blue'], ['Craig', '??', 'Turquoise', 'Red']]
+
 Loading Data from Disk
 ----------------------
 If you are working with CSV or text files, data can be easily loaded from disk::

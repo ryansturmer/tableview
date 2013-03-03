@@ -3,8 +3,10 @@ try:
 except:
     from distutils.core import setup
 
+import tableview
+
 setup(name='tableview',
-      version='1.0.4',
+      version=tableview.__version__,
       packages=['tableview'],
       description='Library for loading and manipulating tabular data.',
       author='Ryan Sturmer',
