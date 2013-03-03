@@ -1,7 +1,10 @@
-tableview
+Tableview
+=========
 
-A simple python module for loading, manipulating and saving data from text files.
+A simple python module for manipulating tabular data.
 
+Quick Example
+-------------
 ```python
 
 import tableview
@@ -18,3 +21,10 @@ intersection = table.rows[:3].cols[:3]
 print intersection.pretty()
 
 ```
+
+Running the Tests
+-----------------
+
+If you are a developer, running the unit tests requires pytest.  With pytest installed, execute ``py.test`` in the top level directory.
+
+
