@@ -137,6 +137,10 @@ class TableView(object):
     def cols(self):
         return TableSelector(self, mode=VectorView.COL)
 
+    @property
+    def raw(self):
+        return [list(row) for row in self]
+
     def __iter__(self):
         return iter([self[r] for r in range(len(self))])
     def __getitem__(self, item):
