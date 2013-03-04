@@ -97,7 +97,6 @@ Frequently, we want to select data based on some criteria, rather than by index.
 The select methods take a single callable that takes a single argument (a row or column). They return True if the row or column is to be returned in the selection.  Let's inspect our selected data::
 
   >>> print selection.pretty()
-  Name    Age Drink     Color 
   Michael 31  Coffee    Blue  
   Brent   26  Coffee    Blue  
 
@@ -118,9 +117,9 @@ Stripping Rows and Columns
 Stripping works just like selecting, except that the matching rows/columns are removed from the output, rather than included.  Back to our coffee drinkers::
 
   >>> print table.strip_rows(lambda row : row[2] == 'Coffee').pretty()
-  Name    Age Drink     Color 
   Ryan    30  Tea       Purple
   Keith   40  Tea       Maroon
+  Craig   ??  Bourbon   Turquoise
 
 Tea is better for you, anyway.
 
