@@ -124,6 +124,65 @@ Stripping works just like selecting, except that the matching rows/columns are r
 
 Tea is better for you, anyway.
 
+Splitting Tables
+----------------
+``TableViews`` can be split into smaller views by rows or by columns.  This is handy when you have a table that is composed of multiple subtables, separated by empty rows or a divider::
+
+  separated_data = [[1,2,3], \
+                    [], \
+                    [4,5,6], \
+                    [7,8,9], \
+                    ['','','']
+                    [10,11,12], \
+                    [13,14,15], \
+                    [16,17,18]]
+   table = tableview.TableView(separated_data)
+   
+   one,two,three = table.split_rows()
+
+   >>> print one.pretty()
+   1 2 3
+
+   >>> print two.pretty()
+   4 5 6
+   7 8 9
+
+   >>> print three.pretty()
+   10 11 12
+   13 14 15
+   16 17 18
+
+The default behavior of ``split_rows`` and ``split_cols`` is to split on empty rows/columns.  The example above splits the table view into 3 parts, using the empty rows as delimiters.  An 'empty' row is one whose elements all evaluate to ``False``  This is why the row of empty strings worked as a delimiter in the example above.  This also means that a row of zeroes is a valid delimiter, so care must be taken when working with tables of numeric data.
+
+The default delimiter behavior can be modified with an optional criteria argument to ``split_rows`` and ``split_cols``  It is a function that accepts a row or column as an argument, and should return ``True`` if that row or column is a delimiter::
+
+  mixed_data = [['Letters:'], \
+                ['a','b','c'], \
+                ['d','e','f'], \
+                ['Numbers:'], \
+                [1,2,3], \
+                [4,5,6], \
+                [7,8,9]], \
+                ['Symbols:'], \
+                ['*','%','!'], \
+                ['$','#','@']]
+  table = tableview.TableView(mixed_data)
+  letters,numbers,symbols = table.split_rows(lambda row : row[0].endswith(':'))
+
+  >>> print letters.pretty()
+  a b c
+  d e f
+  
+  >>> print numbers.pretty()
+  1 2 3
+  4 5 6
+
+  >>> print symbols.pretty()
+  * % !
+  $ # @
+
+The example above performs a similar split, but instead of looking for empty rows, it uses rows whose first cells end with a colon (:), assuming these rows to be section headings.
+
 Manipulating Data
 -----------------
 While row and column operations don't affect a ``TableView's`` source data, assignments to its members do.  Once you have the view configured to show the data you want, it can be modified.  This is the real power of Tableview::

@@ -1,4 +1,5 @@
-import pytest, tableview
+import tableview
+import pytest
 
 data = [['Number', 'Word', 'Decimal', 'Hex'],
         [0,'zero','0','0x%x' % 0],
@@ -12,6 +13,8 @@ data = [['Number', 'Word', 'Decimal', 'Hex'],
         [8,'eight','8','0x%x' % 8],
         [9,'nine','9','0x%x' % 9],
         [10,'ten','10','0x%x' % 10]]
+
+data2 = [[1,2,3,4,5],[],[6,7,8,9,10],[11,12,13,14,15],[],[16,17,18,19,20],[21,22,23,24,25],[26,27,28,29,30]]
 
 def test_create():
     table = tableview.TableView(data)
@@ -43,3 +46,22 @@ def test_row_selection():
     assert list(zero) == list(zero_direct)
 
     assert list(zero) == data[1]
+
+def test_split_rows():
+    # Sanity check incoming data before mangling
+    table = tableview.TableView(data2)
+    assert len(table) == 8
+
+    subtables = table.split_rows()
+
+    # Correct number and length of subtables
+    assert len(subtables) == 3
+    assert len(subtables[0]) == 1
+    assert len(subtables[1]) == 2
+    assert len(subtables[2]) == 3
+    
+    # Check first row data of each subtable
+    assert list(subtables[0][0]) == data2[0]
+    assert list(subtables[1][0]) == data2[2]
+    assert list(subtables[2][0]) == data2[5]
+

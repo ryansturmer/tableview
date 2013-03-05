@@ -38,7 +38,7 @@ class TableSelector(object):
                 return VectorView(self.source.data, (self.source.row_index[item], self.source.col_index), type=VectorView.ROW)
             else:
                 return VectorView(self.source.data, (self.source.col_index[item], self.source.row_index), type=VectorView.COL)
-
+    
     def __delitem__(self, item):
         if self.mode == VectorView.ROW:
             del self.source.row_index[item]
@@ -101,6 +101,9 @@ class VectorView(object):
         else:
             self.data[self.index[a]][self.ordinal] = b
 
+    def empty(self):
+        return not reduce(lambda x,y : x or y, self, False)
+    
     def __str__(self):
         return repr(self)
     def __repr__(self):
@@ -121,7 +124,34 @@ class TableView(object):
     def __len__(self):
         return len(self.row_index)
 
-    def _dataset(self):
+    def _split(self, selector, f):
+        f = f or (lambda x : x.empty)
+        start = None
+        ranges = []
+        for i,row in enumerate(selector):
+            if f(row):
+                if start != None:
+                    ranges.append((start, i))
+                    start = None
+            else:
+                if start == None:
+                    start = i
+
+        if start != None:
+            ranges.append((start,i+1))
+        return [selector[slice(*r)] for r in ranges]
+
+    def split_rows(self, f=None):
+        return self._split(self.rows, f)
+
+    def split_cols(self, f=None):
+        return self._split(self.cols, f)
+    
+    def split(self,f=None):
+        return self.split_rows(f)
+
+    @property
+    def dataset(self):
         import tablib
         d = tablib.Dataset()
         for row in self:
@@ -130,11 +160,11 @@ class TableView(object):
 
     @property
     def csv(self):
-        return self._dataset().csv
+        return self.dataset.csv
 
     @property
     def json(self):
-        return self._dataset().json
+        return self.dataset.json
 
     @property
     def rows(self):
