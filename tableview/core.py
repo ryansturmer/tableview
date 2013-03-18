@@ -150,6 +150,12 @@ class TableView(object):
     def split(self,f=None):
         return self.split_rows(f)
 
+    def pick_rows(self, *x):
+        return TableView(self.data, (x, self.col_index))
+
+    def pick_cols(self, *x):
+        return TableView(self.data, (self.row_index, x))
+ 
     @property
     def dataset(self):
         import tablib
