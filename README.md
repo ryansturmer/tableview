@@ -22,6 +22,10 @@ print intersection.pretty()
 
 ```
 
+Documentation
+-------------
+More comprehensive documentation lives here: http://tableview.readthedocs.org/en/latest/
+
 Running the Tests
 -----------------
 
