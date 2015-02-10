@@ -29,8 +29,8 @@ class DelimitedFile(file):
             if not s:
                 return ''
             else:
-                s = s.strip()
-                retval = self.unformat( s)
+                s = s.strip('\r\n')
+                retval = self.unformat(s)
                 if retval != []:
                     return retval
 

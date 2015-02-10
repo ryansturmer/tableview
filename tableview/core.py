@@ -1,7 +1,7 @@
 import re, types, os
 
 __title__ = 'tableview'
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 __author__ = 'Ryan Sturmer'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2012 Ryan Sturmer'
