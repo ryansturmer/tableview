@@ -1,7 +1,7 @@
 import re, types, os
 
 __title__ = 'tableview'
-__version__ = '0.0.5'
+__version__ = '0.1.0'
 __author__ = 'Ryan Sturmer'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2012 Ryan Sturmer'
@@ -200,6 +200,10 @@ class TableView(object):
     def __delitem__(self, i):
         del self.row_index[i]
 
+    def convert(self, f, quiet=True):
+        for row in self:
+            row.convert(f, quiet)
+
     def strip_rows(self, selector):
         '''
         Return a new TableView without the rows that match the provided selector.
@@ -247,7 +251,7 @@ class TableView(object):
         for row in self:
             line = []
             for i,cell in enumerate(row):
-                s = str(cell) if cell else ''
+                s = str(cell) if (cell != None) else ''
                 line.append(s + ' '*(col_widths[i]-len(s)))
             lines.append(line)
         return '\n'.join([' '.join(line) for line in lines])
@@ -267,7 +271,7 @@ def load(filename):
     None will be substituted for all missing values.
     '''
     path, ext = os.path.splitext(filename)
-    ext = ext.lower()
+    ext = ext.strip('.').lower()
     if ext in ('tsv', 'tab', 'txt'):
         with TSVFile(filename) as fp:
             source_data = fp.readlines()
