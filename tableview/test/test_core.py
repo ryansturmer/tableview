@@ -22,6 +22,12 @@ def test_create():
     assert len(table.rows) == 12
     assert len(table.cols) == 4
 
+def test_convert():
+    table = tableview.TableView(data)
+    number_strings = table.cols[2]
+    number_strings.convert(int)
+    assert list(number_strings) == ['Decimal'] + list(range(11))
+
 def test_column_index():
     table = tableview.TableView(data)
     
@@ -53,7 +59,7 @@ def test_split_rows():
     assert len(table) == 8
 
     subtables = table.split_rows()
-
+    
     # Correct number and length of subtables
     assert len(subtables) == 3
     assert len(subtables[0]) == 1

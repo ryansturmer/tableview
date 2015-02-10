@@ -101,9 +101,18 @@ class VectorView(object):
         else:
             self.data[self.index[a]][self.ordinal] = b
 
+    @property
     def empty(self):
         return not reduce(lambda x,y : x or y, self, False)
     
+    def convert(self, f, quiet=True):
+        for idx, value in enumerate(self):
+            try:
+                self[idx] = f(value)
+            except:
+                if not quiet:
+                    raise
+
     def __str__(self):
         return repr(self)
     def __repr__(self):

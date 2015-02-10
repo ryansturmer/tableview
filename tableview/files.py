@@ -25,10 +25,11 @@ class DelimitedFile(file):
 
     def readline(self):
         while True:
-            s = file.readline(self).strip()
-            if s == '':
-                return []
+            s = file.readline(self)
+            if not s:
+                return ''
             else:
+                s = s.strip()
                 retval = self.unformat( s)
                 if retval != []:
                     return retval
