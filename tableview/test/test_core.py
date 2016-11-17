@@ -71,3 +71,12 @@ def test_split_rows():
     assert list(subtables[1][0]) == data2[2]
     assert list(subtables[2][0]) == data2[5]
 
+def test_loads():
+    s = '''
+1,2,3
+4,5,6
+7,8,9
+'''
+    table = tableview.loads(s)
+    assert len(table) == 3
+    assert len(table.cols) == 3

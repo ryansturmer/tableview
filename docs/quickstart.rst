@@ -210,7 +210,7 @@ A copy of the contents of a view can be retrieved using its ``raw`` property.  T
 
 Loading Data from Disk
 ----------------------
-If you are working with CSV or text files, data can be easily loaded from disk::
+If you are working with CSV or text files, data can be easily loaded from disk by passing a filename, or a file-like object::
   
   table = tableview.load('data.csv')
 
@@ -219,4 +219,4 @@ In this case, the ``TableView`` object wasn't invoked directly.  Like any ``Tabl
   >>> print table.data
   [['Name', 'Age', 'Drink', 'Color'], ['Ryan', 30, 'Tea', 'Purple'], ['Michael', 31, 'Coffee', 'Blue'], ['Keith', 40, 'Tea', 'Maroon'], ['Brent', 26, 'Coffee', 'Blue'], ['Craig', ??, 'Bourbon', 'Turquoise']]
 
-The ``tableview.load`` function uses the file extension to determine how to parse the file.  A .csv extension indicates comma-separated-values, and any other extension is assumed to be tab-separated text.
+The ``tableview.load`` function uses the file extension to determine how to parse the file.  A .tsv, .txt, or .tab extension indicates tab-separated-values, and any other extension is assumed to be comma-separated text.  If a file-like object is passed that has no ``name`` attribute, the text is read and commas and tabs are counted.  If the file has more tabs than commas, it is presumed to be tab separated.  If it has more commas than tabs, it is presumed to be comma separated.

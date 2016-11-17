@@ -1,1 +1,1 @@
-from core import (TableView, load, __version__)
+from core import (TableView, load, loads, __version__)

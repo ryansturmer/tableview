@@ -1,8 +1,8 @@
 import re
 
-class DelimitedFile(file):
-    def __init__(self, *args, **kwargs):
-        file.__init__(self, *args, **kwargs)
+class Delimiter(object):
+    def __init__(self, file):
+        self.file = file
         self.__current_line = []
         self.idx = 0
         self.cache = None
@@ -20,12 +20,17 @@ class DelimitedFile(file):
 
     def __iter__(self):
         if not self.cache:
-            self.cache = self.readlines()
+            self.cache = self.file.readlines()
         return iter(self.cache)
+
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.file.close()
 
     def readline(self):
         while True:
-            s = file.readline(self)
+            s = self.file.readline()
             if not s:
                 return ''
             else:
@@ -55,16 +60,16 @@ class DelimitedFile(file):
                 return None
 
     def write(self, data):
-	    file.write(self, self.format(data) + "\n")
+	    self.file.write(self.format(data) + "\n")
 
     def writelines(self, lines):
         for line in lines:
             self.write(line)
 
-class CSVFile(DelimitedFile):
+class CSVData(Delimiter):
 
-    def __init__(self, *args, **kwargs):
-        DelimitedFile.__init__(self, *args, **kwargs)
+    def __init__(self, file):
+        Delimiter.__init__(self, file)
         self._csvregex = re.compile(r',(?=(?:[^"]*"[^"]*")*(?![^"]*"))')
 
     def format(self, data):
@@ -88,10 +93,10 @@ class CSVFile(DelimitedFile):
                 pass
         return data
 
-class SimpleDelimitedFile(DelimitedFile):
-    def __init__(self, delimiter, *args, **kwargs):
+class SimpleDelimiter(Delimiter):
+    def __init__(self, file, delimiter):
         self.__delimiter = delimiter
-        DelimitedFile.__init__(self, *args, **kwargs)
+        Delimiter.__init__(self, file)
 
     def format(self, data):
         data = listify(data)
@@ -103,12 +108,12 @@ class SimpleDelimitedFile(DelimitedFile):
         data = data.split(self.__delimiter)
         return data
 
-class TSVFile(SimpleDelimitedFile):
+class TSVData(SimpleDelimiter):
     def __init__(self, *args, **kwargs):
-        SimpleDelimitedFile.__init__(self, '\t', *args, **kwargs)
+        SimpleDelimiter.__init__(self, '\t', *args, **kwargs)
 
-class TextFile(SimpleDelimitedFile):
+class TextData(SimpleDelimiter):
     def __init__(self, *args, **kwargs):
-        SimpleDelimitedFile.__init__(self, ' ', *args, **kwargs)
+        SimpleDelimiter.__init__(self, ' ', *args, **kwargs)
 
 

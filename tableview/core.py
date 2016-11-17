@@ -1,10 +1,10 @@
-import re, types, os
+import re, types, os, StringIO
 
 __title__ = 'tableview'
-__version__ = '0.1.1'
+__version__ = '0.2.0'
 __author__ = 'Ryan Sturmer'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2012 Ryan Sturmer'
+__copyright__ = 'Copyright 2012-2016 Ryan Sturmer'
 __docformat__ = 'restructuredtext'
 
 def listify(l):
@@ -261,8 +261,8 @@ class TableView(object):
     def __repr__(self):
         return "<Table:%d rows, %d columns>" % (len(self.row_index), len(self.col_index))
 
-from files import TSVFile, CSVFile
-def load(filename):
+from files import TSVData, CSVData
+def load(fp):
     '''
     Load a table from a text file on disk and return a TableView that represents it.
     Function uses the file extension to determine the filetype:
@@ -270,14 +270,48 @@ def load(filename):
          Otherwise = Comma-Delimited Text
     None will be substituted for all missing values.
     '''
-    path, ext = os.path.splitext(filename)
-    ext = ext.strip('.').lower()
-    if ext in ('tsv', 'tab', 'txt'):
-        with TSVFile(filename) as fp:
-            source_data = fp.readlines()
+
+    if hasattr(fp, 'name'):    
+        path, ext = os.path.splitext(fp.name)
+        ext = ext.strip('.').lower()
+        if ext in ('tsv', 'tab', 'txt'):
+            DataType = TSVData
+        else:
+            DataType = CSVData
     else:
-        with CSVFile(filename) as fp:
-            source_data = fp.readlines()
+        with open(fp, 'r') as fp:
+            s = fp.read()
+            tabs = s.count('\t')
+            commas = s.count(',')
+        if tabs > commas:
+            DataType = TSVData
+        else:
+            DataType = CSVData
+        fp = StringIO.StringIO(s)
+
+    with DataType(fp) as fp:
+        source_data = fp.readlines()
+
+    maxlen = 0
+    for row in source_data:
+        maxlen = max(len(row), maxlen)
+
+    for row in source_data:
+        row.extend([None]*(maxlen-len(row)))
+
+    return TableView(source_data)
+
+def loads(s):
+    tabs = s.count('\t')
+    commas = s.count(',')
+    if tabs > commas:
+        DataType = TSVData
+    else:
+        DataType = CSVData
+    fp = StringIO.StringIO(s)
+
+    with DataType(fp) as fp:
+        source_data = fp.readlines()
 
     maxlen = 0
     for row in source_data:

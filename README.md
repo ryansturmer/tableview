@@ -26,9 +26,7 @@ Documentation
 -------------
 More comprehensive documentation lives here: http://tableview.readthedocs.org/en/latest/
 
+
 Running the Tests
 -----------------
-
-If you are a developer, running the unit tests requires pytest.  With pytest installed, execute ``py.test`` in the top level directory.
-
-
+If you are a developer, running the unit tests requires pytest.  With pytest installed, execute ``pytest`` in the top level directory.
