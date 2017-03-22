@@ -77,7 +77,7 @@ class CSVData(Delimiter):
         retval = ''
         for d in data:
             if d == None: d = ''
-            retval += ',"%s"' % str(d).replace('"', '""')
+            retval += ',"%s"' % unicode(d).replace('"', '""')
 
         return retval.lstrip(",")
 
@@ -100,7 +100,7 @@ class SimpleDelimiter(Delimiter):
 
     def format(self, data):
         data = listify(data)
-        return self.__delimiter.join(map(str, data))
+        return self.__delimiter.join(map(unicode, data))
 
     def unformat(self, data):
         if data.strip() == '':

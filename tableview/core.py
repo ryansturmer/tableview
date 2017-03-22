@@ -1,7 +1,8 @@
 import re, types, os, StringIO
+import codecs
 
 __title__ = 'tableview'
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 __author__ = 'Ryan Sturmer'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2012-2016 Ryan Sturmer'
@@ -30,28 +31,48 @@ class TableSelector(object):
             if self.mode == VectorView.ROW:
                 start, stop, step = item.indices(len(self.source.row_index))
                 return TableView(self.source.data, ([self.source.row_index[x] for x in range(start, stop, step)], self.source.col_index))
-            else: # VectorView.COL    
+            else: # VectorView.COL
                 start, stop, step = item.indices(len(self.source.col_index))
                 return TableView(self.source.data, (self.source.row_index, [self.source.col_index[x] for x in range(start, stop, step)]))
         else: # index, not slice
+            try:
+                if int(item) == item:
+                    pass
+                else:
+                    raise Exception
+            except:
+                if self.mode == VectorView.ROW:
+                    labels = self.source.cols[0]
+                else:
+                    labels = self.source.rows[0]
+
+                key = item
+                item = None
+                for i, label in enumerate(labels):
+                    if label == key:
+                        item = i
+                        break
+                if item == None:
+                    raise KeyError(key)
+
             if self.mode == VectorView.ROW:
                 return VectorView(self.source.data, (self.source.row_index[item], self.source.col_index), type=VectorView.ROW)
             else:
                 return VectorView(self.source.data, (self.source.col_index[item], self.source.row_index), type=VectorView.COL)
-    
+
     def __delitem__(self, item):
         if self.mode == VectorView.ROW:
             del self.source.row_index[item]
         else:
             del self.source.col_index[item]
-                
+
     def __len__(self):
         return len(self.source.row_index) if self.mode == VectorView.ROW else len(self.source.col_index)
 
     def __iter__(self):
         return iter([self[i] for i in range(len(self))])
 
-            
+
 class VectorView(object):
     '''
     View of a single row or column of data
@@ -67,7 +88,7 @@ class VectorView(object):
         '''
         Return a pretty printed string of this vector
         '''
-        return (' ' if self.type == VectorView.ROW else '\n').join(map(str, self))
+        return (' ' if self.type == VectorView.ROW else '\n').join(map(unicode, self))
 
     def __len__(self):
         return len(self.index)
@@ -104,7 +125,7 @@ class VectorView(object):
     @property
     def empty(self):
         return not reduce(lambda x,y : x or y, self, False)
-    
+
     def convert(self, f, quiet=True):
         for idx, value in enumerate(self):
             try:
@@ -129,7 +150,7 @@ class TableView(object):
             self.col_index = range(max(map(len, src)))
         else:
             self.row_index, self.col_index = index
-   
+
     def __len__(self):
         return len(self.row_index)
 
@@ -155,7 +176,7 @@ class TableView(object):
 
     def split_cols(self, f=None):
         return self._split(self.cols, f)
-    
+
     def split(self,f=None):
         return self.split_rows(f)
 
@@ -164,7 +185,7 @@ class TableView(object):
 
     def pick_cols(self, *x):
         return TableView(self.data, (self.row_index, x))
- 
+
     @property
     def dataset(self):
         import tablib
@@ -208,16 +229,16 @@ class TableView(object):
         '''
         Return a new TableView without the rows that match the provided selector.
         Parameters:
-          selector - A function that takes a single argument, a table row, and returns 
+          selector - A function that takes a single argument, a table row, and returns
                      True for a row that is to be stripped, and False otherwise.
         '''
         return self.select_rows(lambda x : not selector(x))
-    
+
     def strip_cols(self, selector):
         '''
         Return a new TableView without the rows that match the provided selector.
         Parameters:
-          selector - A function that takes a single argument, a table column, and returns 
+          selector - A function that takes a single argument, a table column, and returns
                      True for a column that is to be stripped, and False otherwise.
         '''
         return self.select_cols(lambda x : not selector(x))
@@ -246,12 +267,12 @@ class TableView(object):
         col_widths = [0]*len(self[0])
         for row in self:
             for i, cell in enumerate(row):
-                col_widths[i] = max(len(str(cell)), col_widths[i])
+                col_widths[i] = max(len(unicode(cell)), col_widths[i])
         lines = []
         for row in self:
             line = []
             for i,cell in enumerate(row):
-                s = str(cell) if (cell != None) else ''
+                s = unicode(cell) if (cell != None) else ''
                 line.append(s + ' '*(col_widths[i]-len(s)))
             lines.append(line)
         return '\n'.join([' '.join(line) for line in lines])
@@ -262,7 +283,7 @@ class TableView(object):
         return "<Table:%d rows, %d columns>" % (len(self.row_index), len(self.col_index))
 
 from files import TSVData, CSVData
-def load(fp):
+def load(fp, encoding=None):
     '''
     Load a table from a text file on disk and return a TableView that represents it.
     Function uses the file extension to determine the filetype:
@@ -271,7 +292,7 @@ def load(fp):
     None will be substituted for all missing values.
     '''
 
-    if hasattr(fp, 'name'):    
+    if hasattr(fp, 'name'):
         path, ext = os.path.splitext(fp.name)
         ext = ext.strip('.').lower()
         if ext in ('tsv', 'tab', 'txt'):
@@ -279,7 +300,7 @@ def load(fp):
         else:
             DataType = CSVData
     else:
-        with open(fp, 'r') as fp:
+        with codecs.open(fp, 'r', encoding or 'ascii') as fp:
             s = fp.read()
             tabs = s.count('\t')
             commas = s.count(',')
